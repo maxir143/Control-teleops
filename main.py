@@ -1,182 +1,253 @@
-import tkinter as tk
-from tkinter import *
-import vgamepad as vg
-import sys
 import os
 import random
-from playsound import playsound
-from PIL import ImageTk, Image
+import sys
+import tkinter as tk
+from tkinter import *
 
+import vgamepad as vg
 
-#iniciamos aplicacion
+# iniciamos aplicacion
 window = tk.Tk()
+
+# frames
+iconFrame = Frame(window, height=150)
+iconFrame.pack(side='bottom')
+
+
+# ------------------------------------------------------
+# --------------funciones-------------------------------
+# ------------------------------------------------------
+def resourcePath(relative_path):
+    try:  # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+
+def windowTitleSet(text=''):
+    window.title(text)
+
+
+# control xbox
+def gpButtonPress(btn, value=0, x=0, y=0):
+    if btn == 'A':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
+        return true
+    elif btn == 'B':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
+    elif btn == 'X':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
+    elif btn == 'Y':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
+    elif btn == 'UP':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
+    elif btn == 'DOWN':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
+    elif btn == 'LEFT':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
+    elif btn == 'RIGHT':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
+    elif btn == 'LB':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER)
+    elif btn == 'RB':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
+    elif btn == 'RS':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
+    elif btn == 'LS':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
+    elif btn == 'START':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START)
+    elif btn == 'BACK':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
+    elif btn == 'HOME':
+        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE)
+    elif btn == 'RT':
+        gamepad.left_trigger_float(value)
+    elif btn == 'LT':
+        gamepad.right_trigger_float(value)
+    elif btn == 'LJ':
+        gamepad.left_joystick_float(x, y)
+    elif btn == 'RJ':
+        gamepad.right_joystick_float(x, y)
+    gamepad.update()
+
+
+def gpButtonRealease(btn):
+    if btn == 'A':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
+    elif btn == 'B':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
+    elif btn == 'X':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
+    elif btn == 'Y':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
+    elif btn == 'UP':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
+    elif btn == 'DOWN':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
+    elif btn == 'LEFT':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
+    elif btn == 'RIGHT':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
+    elif btn == 'LB':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER)
+    elif btn == 'RB':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
+    elif btn == 'RS':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
+    elif btn == 'LS':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
+    elif btn == 'START':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START)
+    elif btn == 'BACK':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
+    elif btn == 'HOME':
+        gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE)
+    elif btn == 'RT':
+        gamepad.left_trigger_float(0)
+    elif btn == 'LT':
+        gamepad.right_trigger_float(0)
+    elif btn == 'LJ':
+        gamepad.left_joystick_float(0, 0)
+    elif btn == 'RJ':
+        gamepad.right_joystick_float(0, 0)
+    gamepad.update()
+
+
+def gpReset():
+    global gamepad
+    gamepad.reset()
+    gamepad.update()
+
+
+# boton emulador on/off
+gamepad = 0  # control emulado (0 == no esta conectado)
+
+
+def emulatorConnect():
+    global gamepad
+    gamepad = vg.VX360Gamepad()  # conectar controll
+    label_control_status.configure(image=img_control_connected)  # cambiar icono de coneccion
+    windowTitleSet('control conectado')
+
+
+def emulatorDisconnect():
+    global gamepad
+    gamepad = 0
+    label_control_status.configure(image=img_control_disconnected)  # cambiar icono de coneccion
+    camTestDriver()
+
+
+def emulatorDriver():
+    if gamepad is 0:
+        emulatorConnect()
+    else:
+        emulatorDisconnect()
+
+
+# boton camaras giratorias
+camtestalarm = 0
+
+def camTestDriver(time=1000):
+    global camtestalarm
+    if gamepad is 0:
+        windowTitleSet('control desconectado')
+        if camtestalarm == 1:
+            camtestalarm = 0
+            label_aplication_status.configure(image=img_notworking)
+            windowTitleSet('detenido camTestDriver')
+    else:
+        if camtestalarm == 0:
+            camtestalarm = 1
+            window.after(1, lambda: camTestAlarm(time))
+            label_aplication_status.configure(image=img_working)
+            windowTitleSet('trabajando camTestDriver')
+        else:
+            camtestalarm = 0
+            label_aplication_status.configure(image=img_notworking)
+            windowTitleSet('detenido camTestDriver')
+            gpReset()
+
+def camTestReset():
+    gpButtonRealease('UP')
+    gpButtonRealease('DOWN')
+    gpButtonRealease('LEFT')
+    gpButtonRealease('RIGHT')
+
+def camTestAlarm(time=1000):
+    if camtestalarm:
+        camTestReset()
+        gpButtonPress('B')
+        i = random.randint(1, 4)
+        if i == 1:
+            gpButtonPress('UP')
+        elif i == 2:
+            gpButtonPress('DOWN')
+        elif i == 3:
+            gpButtonPress('LEFT')
+        elif i == 4:
+            gpButtonPress('RIGHT')
+        window.after(time, lambda: camTestAlarm(time))
+
+# boton acelerador
+def accelerateDriver(value=0):
+    if gamepad is not 0:
+        gpButtonPress('RT', float(value/100))
+    else:
+        windowTitleSet('control desconectado')
+
+# boton freno
+def stopDriver():
+    if gamepad is not 0:
+        gpButtonPress('RT', float(0))
+    else:
+        windowTitleSet('control desconectado')
+
+
+# ------------------------------------------------------
+# --------Recursos--------------------------------------
+# ------------------------------------------------------
+# Imagenes
+img_control_connected = PhotoImage(file=resourcePath("connect.png"))
+img_control_disconnected = PhotoImage(file=resourcePath("disconnect.png"))
+img_working = PhotoImage(file=resourcePath("on.png"))
+img_notworking = PhotoImage(file=resourcePath("off.png"))
+
+# ------------------------------------------------------
+# ------------aplicacion--------------------------------
+# ------------------------------------------------------
+# configuracion de la ventana
 window.resizable(False, False)
+window.title('Tortops')
+window.iconbitmap(resourcePath("favicon.ico"))
 
-iconFrame = Frame(window,height=150)
-iconFrame.pack(side = 'bottom' )
-
-
-#Botones
-buttons = {}
-window.clock = 0
-gamepad = 0
-title = ''
+# iconos
+label_control_status = Label(iconFrame, image=img_control_disconnected)
+label_control_status.pack(side='right', fill='both')
+label_aplication_status = Label(iconFrame, image=img_notworking)
+label_aplication_status.pack(side='right', fill='both')
 
 
-#funciones
-def resource_path(relative_path):
-	try:
-		# PyInstaller creates a temp folder and stores path in _MEIPASS
-		base_path = sys._MEIPASS
-	except Exception:
-		base_path = os.path.abspath(".")
-	return os.path.join(base_path, relative_path)
-
-def pressGPButton(btn):
-	global gamepad
-	if btn == 'A':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
-	elif btn == 'B':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
-	elif btn == 'X':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
-	elif btn == 'Y':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
-	elif btn == 'UP':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
-	elif btn == 'DOWN':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN )
-	elif btn == 'LEFT':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT )
-	elif btn == 'RIGHT':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT )
-	elif btn == 'LB':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER)
-	elif btn == 'RB':
-		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER )
-	elif btn == 'LoopCamara':
-		window.clock = 1
-		alarm()
-	elif btn == 'Conectar':
-		gamepad = vg.VX360Gamepad()
-		bnt2.configure(image=controlConectado)
-		buttons['LoopCamara'] = 0
-	if gamepad is not 0:
-		print(btn)
-		gamepad.update()
+# Botones
 
 
 
-def releaseGPButton(btn):
-	global gamepad
-	if btn == 'A':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
-	elif btn == 'B':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
-	elif btn == 'X':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
-	elif btn == 'Y':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
-	elif btn == 'UP':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
-	elif btn == 'DOWN':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN )
-	elif btn == 'LEFT':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT )
-	elif btn == 'RIGHT':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT )
-	elif btn == 'LB':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER)
-	elif btn == 'RB':
-		gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER )
-	elif btn == 'LoopCamara':
-		window.clock = 0
-	elif btn == 'Conectar':
-		gamepad = 0
-		bnt2.configure(image=controlDesconectado)
-	if gamepad is not 0:
-		print(btn)
-		gamepad.update()
+button_connect = tk.Button(iconFrame, text='CONECTAR EMULADOR', command=emulatorDriver)
+button_connect.pack(fill='both')
 
-def click(btn,DB):
-	playsound(resource_path('click.wav'))
-	DB[btn] = 0 if DB[btn] else 1
-	if DB[btn] == 1:
-		pressGPButton(btn)
-	else:
-		releaseGPButton(btn)
-	print(DB[btn])
+button_cam_test = tk.Button(iconFrame, text='GIRAR CAMARA', command=camTestDriver)
+button_cam_test.pack(fill='both')
 
-def button(btn,master=window,photo='',side ='top',title=''):
-	if title is  '':
-		title = btn
-	button = tk.Button(master=master,text=title,image=photo,compound = LEFT ,command = lambda:pressGPButton(btn))
-	button.pack(side = side)
+button_accel = tk.Button(iconFrame, text='Acelerar', command= lambda :accelerateDriver(slider_accel.get()))
+button_accel.pack(fill='both')
 
-def Switch(name,master=window,DB=buttons,title=''):
-	if title is  '':
-		title = name
-	DB[name] = 0
-	button = tk.Button(master=master,text=title, width=80, height=10 , command = lambda:click(name,DB))
-	button.pack(fill  = 'both')
+button_stop = tk.Button(iconFrame, text='Frenar', command= stopDriver)
+button_stop.pack(fill='both')
 
-def createSwitch(name):
-	Switch(name,control)
-
-def alarm():
-	global gamepad
-	window.wm_title(string="OFF")
-	bnt1.configure(image=loopOff)
-	if window.clock == 1 and gamepad is not 0:
-		window.wm_title(string="ON")
-		bnt1.configure(image=loopOn)
-		window.after(1000, alarm)
-		print('tick tack')
-		pressGPButton('B')
-		arrow = random.randint(1,4)
-		if arrow == 1:
-			pressGPButton('UP')
-			gamepad.reset()
-		elif arrow == 2:
-			pressGPButton('DOWN')
-			gamepad.reset()
-		elif arrow == 3:
-			pressGPButton('LEFT')
-			gamepad.reset()
-		elif arrow == 4:
-			pressGPButton('RIGHT')
-			gamepad.reset()
-
-
-#iconos
-controlConectado = PhotoImage(file = resource_path("connect.png"))
-controlDesconectado = PhotoImage(file = resource_path("disconnect.png"))
-
-loopOn = PhotoImage(file = resource_path("on.png"))
-loopOff = PhotoImage(file = resource_path("off.png"))
-
-
-#aplicacion
-
-Switch('Conectar', title = 'CONECTAR EMULADOR')
-Switch('LoopCamara', title = 'COMENZAR A GIRAR CAMARAS')
-
-bnt2 = Label(iconFrame,image=controlDesconectado)
-bnt2.pack(side ='left',fill  = 'both')
-bnt1 = Label(iconFrame,image=loopOff)
-bnt1.pack(side ='left',fill  = 'both')
-
-
-
-
-
-
-
-
-
-
-
-
-
-window.after(1, alarm)
+slider_accel = tk.Scale(iconFrame,from_=0,to=100,orient='horizontal')
+slider_accel.pack(fill='both')
+# ------------------------------------------------------
+# ------Main Loop---------------------------------------
+# ------------------------------------------------------
 window.mainloop()
