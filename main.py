@@ -208,8 +208,6 @@ def stopDriver():
 # Imagenes
 img_control_connected = PhotoImage(file=resourcePath("connect.png")).subsample(2,2)
 img_control_disconnected = PhotoImage(file=resourcePath("disconnect.png")).subsample(2,2)
-img_button_on = PhotoImage(file=resourcePath("buttonOn.png"))
-img_button_off = PhotoImage(file=resourcePath("buttonOff.png"))
 
 # ------------------------------------------------------
 # ------------aplicacion--------------------------------
