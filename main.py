@@ -277,7 +277,7 @@ slider_dir.bind('<ButtonRelease-1>', dirReset)
 #Control con teclado
 window.bind('<Up>',lambda x: accelerateDriver(1))
 window.bind('<Down>',lambda x: accelerateDriver(0))
-window.bind('<KeyRelease-Up>',lambda x: accelerateDriver(0))
+window.bind('<KeyRelease-Up>',lambda x: accelerateDriver(.5))
 
 window.bind('<Left>',lambda x: dirDriver(-0.5))
 window.bind('<Right>',lambda x: dirDriver(.5))
