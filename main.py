@@ -155,57 +155,73 @@ def emulatorDriver():
 # boton camaras giratorias
 camtestalarm = 0
 def camTestDriver(time=1000):
-    global camtestalarm
-    if gamepad is 0:
-        windowTitleSet('control desconectado')
-        if camtestalarm == 1:
-            camtestalarm = 0
-            button_cam_test.configure(background = 'white')
-            windowTitleSet('detenido camTestDriver')
-    else:
-        if camtestalarm == 0:
-            camtestalarm = 1
-            window.after(1, lambda: camTestAlarm(time))
-            button_cam_test.configure(background = 'green')
-            windowTitleSet('trabajando camTestDriver')
-        else:
-            camtestalarm = 0
-            button_cam_test.configure(background = 'white')
-            windowTitleSet('detenido camTestDriver')
-            gpReset()
-def camTestReset():
-    gpButtonRealease('UP')
-    gpButtonRealease('DOWN')
-    gpButtonRealease('LEFT')
-    gpButtonRealease('RIGHT')
+	global camtestalarm
+	if gamepad is 0:
+		windowTitleSet('control desconectado')
+		if camtestalarm == 1:
+			camtestalarm = 0
+			button_cam_test.configure(background = 'white')
+			windowTitleSet('detenido camTestDriver')
+	else:
+		if camtestalarm == 0:
+			camtestalarm = 1
+			window.after(1, lambda: camTestAlarm(time))
+			button_cam_test.configure(background = 'green')
+			windowTitleSet('trabajando camTestDriver')
+		else:
+			camtestalarm = 0
+			button_cam_test.configure(background = 'white')
+			windowTitleSet('detenido camTestDriver')
+			gpReset()
 def camTestAlarm(time=1000):
-    if camtestalarm:
-        camTestReset()
-        gpButtonPress('B')
-        i = random.randint(1, 4)
-        if i == 1:
-            gpButtonPress('UP')
-        elif i == 2:
-            gpButtonPress('DOWN')
-        elif i == 3:
-            gpButtonPress('LEFT')
-        elif i == 4:
-            gpButtonPress('RIGHT')
-        window.after(time, lambda: camTestAlarm(time))
+	if camtestalarm:
+		camRotate(random.randint(1, 4))
+		window.after(time, lambda: camTestAlarm(time))
 
+# boton girar camaras
+cam = 0
+def camRotateDriver(value=0):
+	global cam
+	if gpState():
+		cam = value + 1
+		if cam > 4 :
+			cam = 1
+		camRotate(cam)
+def camRotate(cam=1):
+	gpButtonPress('B')
+	if cam == 1:
+		gpButtonPress('UP')
+	elif cam == 2:
+		gpButtonPress('RIGHT')
+	elif cam == 3:
+		gpButtonPress('DOWN')
+	elif cam == 4:
+		gpButtonPress('LEFT')
+	window.after(100, camRotateReset)
+def camRotateReset():
+	if gpState():
+		gpButtonRealease('B')
+		gpButtonRealease('UP')
+		gpButtonRealease('DOWN')
+		gpButtonRealease('LEFT')
+		gpButtonRealease('RIGHT')
 
+# boton cambiar camaras
 def camChangeFront():
 	if gpState():
 		gpButtonPress('Y')
 		gpButtonPress('UP')
-		window.after(500, gpReset)
-
+		window.after(500, camReset)
 def camChangeBack():
 	if gpState():
 		gpButtonPress('Y')
 		gpButtonPress('DOWN')
-		window.after(500, gpReset)
-
+		window.after(500, camReset)
+def camReset():
+	if gpState():
+		gpButtonRealease('Y')
+		gpButtonRealease('DOWN')
+		gpButtonRealease('UP')
 
 # boton acelerador
 def accelerateDriver(value=0):
@@ -254,8 +270,11 @@ label_control_status.pack(side='right', fill='both')
 button_connect = tk.Button(frameIcon, text='CONECTAR EMULADOR',height=3, command=emulatorDriver)
 button_connect.pack(fill='both')
 
-#button_cam_test = tk.Button(frameIcon, text='GIRAR CAMARA',height=3, command=camTestDriver)
+#button_cam_test = tk.Button(frameIcon, text='TEST GIRAR CAMARA',height=3, command=camTestDriver)
 #button_cam_test.pack(fill='both')
+
+button_cam_rotate = tk.Button(frameIcon, text='GIRAR CAMARA',height=3, command=lambda: camRotateDriver(cam))
+button_cam_rotate.pack(fill='both')
 
 button_cam_change_front = tk.Button(frameIcon, text='CAMBIAR CAMARA FRONTAL',height=3, command=camChangeFront)
 button_cam_change_front.pack(fill='both')
@@ -281,6 +300,9 @@ window.bind('<KeyRelease-Up>',lambda x: accelerateDriver(.5))
 
 window.bind('<Left>',lambda x: dirDriver(-0.5))
 window.bind('<Right>',lambda x: dirDriver(.5))
+
+window.bind('<Control-Left>',lambda x: dirDriver(-1))
+window.bind('<Control-Right>',lambda x: dirDriver(1))
 
 window.bind('<KeyRelease-Left>',lambda x: dirDriver(0))
 window.bind('<KeyRelease-Right>',lambda x: dirDriver(0))
