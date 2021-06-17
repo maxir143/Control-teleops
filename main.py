@@ -4,6 +4,7 @@ import sys
 import tkinter as tk
 from tkinter import *
 import vgamepad as vg
+import keyboard
 
 # iniciamos aplicacion
 window = tk.Tk()
@@ -273,17 +274,15 @@ button_connect.pack(fill='both')
 #button_cam_test = tk.Button(frameIcon, text='TEST GIRAR CAMARA',height=3, command=camTestDriver)
 #button_cam_test.pack(fill='both')
 
-button_cam_rotate = tk.Button(frameIcon, text='GIRAR CAMARA',height=3, command=lambda: camRotateDriver(cam))
-button_cam_rotate.pack(fill='both')
-
 button_cam_change_front = tk.Button(frameIcon, text='CAMBIAR CAMARA FRONTAL',height=3, command=camChangeFront)
 button_cam_change_front.pack(fill='both')
 
 button_cam_change_back = tk.Button(frameIcon, text='CAMBIAR CAMARA TRASERA',height=3, command=camChangeBack)
 button_cam_change_back.pack(fill='both')
 
-#button_stop = tk.Button(frameIcon, text='Frenar',height=3, command= stopDriver)
-#button_stop.pack(fill='both')
+button_cam_rotate = tk.Button(frameIcon, text='GIRAR CAMARA',height=3, command=lambda: camRotateDriver(cam))
+button_cam_rotate.pack(fill='both')
+
 
 slider_accel = tk.Scale(frameIcon,from_=0,to=1,resolution=.1,orient='horizontal',label='Velocidad',troughcolor='lightblue',command=accelerateDriver)
 slider_accel.pack(fill='both')
@@ -301,11 +300,11 @@ window.bind('<KeyRelease-Up>',lambda x: accelerateDriver(.5))
 window.bind('<Left>',lambda x: dirDriver(-0.5))
 window.bind('<Right>',lambda x: dirDriver(.5))
 
-window.bind('<Control-Left>',lambda x: dirDriver(-1))
-window.bind('<Control-Right>',lambda x: dirDriver(1))
+window.bind('<KeyPress-Control_L>',lambda x: dirDriver(slider_dir.get()*2))
 
 window.bind('<KeyRelease-Left>',lambda x: dirDriver(0))
 window.bind('<KeyRelease-Right>',lambda x: dirDriver(0))
+window.bind('<KeyRelease-Control_L>',lambda x: dirDriver(slider_dir.get()/2))
 
 # game pad
 
