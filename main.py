@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import *
 import vgamepad as vg
 import keyboard
+import time
 
 # iniciamos aplicacion
 window = tk.Tk()
@@ -190,6 +191,7 @@ def camRotateDriver(value=0):
 		camRotate(cam)
 def camRotate(cam=1):
 	gpButtonPress('B')
+	time.sleep(.15)
 	if cam == 1:
 		gpButtonPress('UP')
 	elif cam == 2:
@@ -210,12 +212,16 @@ def camRotateReset():
 # boton cambiar camaras
 def camChangeFront():
 	if gpState():
+		camReset()
 		gpButtonPress('Y')
+		time.sleep(.15)
 		gpButtonPress('UP')
 		window.after(500, camReset)
 def camChangeBack():
 	if gpState():
+		camReset()
 		gpButtonPress('Y')
+		time.sleep(.15)
 		gpButtonPress('DOWN')
 		window.after(500, camReset)
 def camReset():
@@ -300,11 +306,11 @@ window.bind('<KeyRelease-Up>',lambda x: accelerateDriver(.5))
 window.bind('<Left>',lambda x: dirDriver(-0.5))
 window.bind('<Right>',lambda x: dirDriver(.5))
 
-window.bind('<KeyPress-Control_L>',lambda x: dirDriver(slider_dir.get()*2))
+window.bind('<KeyPress-space>',lambda x: dirDriver(slider_dir.get()*2))
 
 window.bind('<KeyRelease-Left>',lambda x: dirDriver(0))
 window.bind('<KeyRelease-Right>',lambda x: dirDriver(0))
-window.bind('<KeyRelease-Control_L>',lambda x: dirDriver(slider_dir.get()/2))
+window.bind('<KeyRelease-space>',lambda x: dirDriver(slider_dir.get()/2))
 
 # game pad
 
