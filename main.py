@@ -11,17 +11,18 @@ import time
 window = tk.Tk()
 
 # frames
-frameTop = Frame(window,bg = 'blue')
+frameTop = Frame(window)
 frameTop.pack(side='top',fill='both')
 
-frameBottom = Frame(window,bg = 'red')
-frameBottom.pack(side='bottom')
-
 frameIcon = Frame(frameTop)
-frameIcon.pack(side='right')
+frameIcon.pack(side='right',fill='both',expand=YES)
 
 frameActions = Frame(frameTop)
-frameActions.pack(side='left',fill='both')
+frameActions.pack(side='left')
+
+
+frameBottom = Frame(window)
+frameBottom.pack(side='bottom')
 
 frameGamepad = Frame(frameBottom)
 frameGamepad.pack()
@@ -127,6 +128,9 @@ def gpReset():
 		global gamepad
 		gamepad.reset()
 		gamepad.update()
+		accelReset()
+		dirReset(btn='LJ')
+		dirReset(btn='RJ')
 def gpState():
 	if gamepad is not 0:
 		return 1
@@ -136,7 +140,7 @@ def gpState():
 
 #bonotes
 def btnCreate(name):
-	button_x = tk.Button(frameGamepad,text=name,width=6,height=3,compound = 'bottom', command= lambda:btnDriver(name))
+	button_x = tk.Button(frameGamepad,text=name,width=8,height=4,compound = 'bottom', command= lambda:btnDriver(name))
 	button_x.pack(side = LEFT)
 def btnDriver(name):
 	if gpState():
@@ -293,27 +297,26 @@ window.iconbitmap(resourcePath("favicon.ico"))
 
 # iconos
 label_control_status = Label(frameIcon, image=img_control_disconnected)
-label_control_status.pack(side='top', fill='both')
+label_control_status.pack(side='top',expand=YES)
 
-button_casdasd = tk.Button(frameIcon, text='RESET')
-button_casdasd.pack(side='bottom', fill='both')
+button_casdasd = tk.Button(frameIcon, text='RESET',height=10,width=30,bg='red',fg='white',command= gpReset)
+button_casdasd.pack(side='bottom',expand=YES)
 
 # Botones
-button_connect = tk.Button(frameActions, text='CONECTAR EMULADOR',height=3, command=emulatorDriver)
+button_connect = tk.Button(frameActions, text='CONECTAR EMULADOR',height=4,width=75, command=emulatorDriver)
 button_connect.pack(fill='both')
 
 #button_cam_test = tk.Button(frameActions, text='TEST GIRAR CAMARA',height=3, command=camTestDriver)
 #button_cam_test.pack(fill='both')
 
-button_cam_change_front = tk.Button(frameActions, text='CAMBIAR CAMARA FRONTAL',height=3, command=camChangeFront)
+button_cam_change_front = tk.Button(frameActions, text='CAMBIAR CAMARA FRONTAL',height=4, command=camChangeFront)
 button_cam_change_front.pack(fill='both')
 
-button_cam_change_back = tk.Button(frameActions, text='CAMBIAR CAMARA TRASERA',height=3, command=camChangeBack)
+button_cam_change_back = tk.Button(frameActions, text='CAMBIAR CAMARA TRASERA',height=4, command=camChangeBack)
 button_cam_change_back.pack(fill='both')
 
-button_cam_rotate = tk.Button(frameActions, text='GIRAR CAMARA',height=3, command=lambda: camRotateDriver(cam))
+button_cam_rotate = tk.Button(frameActions, text='GIRAR CAMARA',height=4, command=lambda: camRotateDriver(cam))
 button_cam_rotate.pack(fill='both')
-
 
 slider_accel = tk.Scale(frameActions,from_=0,to=1,resolution=.1,orient='horizontal',label='Velocidad',troughcolor='lightblue',command=accelerateDriver)
 slider_accel.pack(fill='both')
