@@ -11,11 +11,20 @@ import time
 window = tk.Tk()
 
 # frames
-frameIcon = Frame(window, height=150)
-frameIcon.pack(side='top',fill='both')
+frameTop = Frame(window,bg = 'blue')
+frameTop.pack(side='top',fill='both')
 
-frameGamepad = Frame(window, height=150)
-frameGamepad.pack(side='bottom')
+frameBottom = Frame(window,bg = 'red')
+frameBottom.pack(side='bottom')
+
+frameIcon = Frame(frameTop)
+frameIcon.pack(side='right')
+
+frameActions = Frame(frameTop)
+frameActions.pack(side='left',fill='both')
+
+frameGamepad = Frame(frameBottom)
+frameGamepad.pack()
 
 # ------------------------------------------------------
 # --------------funciones-------------------------------
@@ -32,45 +41,47 @@ def windowTitleSet(text=''):
 
 # control xbox
 def gpButtonPress(btn, value=0, x=0, y=0):
-    if btn == 'A':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
-    elif btn == 'B':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
-    elif btn == 'X':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
-    elif btn == 'Y':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
-    elif btn == 'UP':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
-    elif btn == 'DOWN':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
-    elif btn == 'LEFT':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
-    elif btn == 'RIGHT':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
-    elif btn == 'LS':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER)
-    elif btn == 'RS':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
-    elif btn == 'RTHUM':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
-    elif btn == 'LTHUM':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
-    elif btn == 'START':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START)
-    elif btn == 'BACK':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
-    elif btn == 'HOME':
-        gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE)
-    elif btn == 'RT':
-        gamepad.right_trigger_float(value)
-    elif btn == 'LT':
-        gamepad.left_trigger_float(value)
-    elif btn == 'LJ':
-        gamepad.left_joystick_float(x, y)
-    elif btn == 'RJ':
-        gamepad.right_joystick_float(x, y)
-    gamepad.update()
+	x = min(x,1) if x > 0 else max(x,-1)
+	y = min(y,1) if y > 0 else max(y,-1)
+	if btn == 'A':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
+	elif btn == 'B':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
+	elif btn == 'X':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
+	elif btn == 'Y':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
+	elif btn == 'UP':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
+	elif btn == 'DOWN':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
+	elif btn == 'LEFT':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
+	elif btn == 'RIGHT':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
+	elif btn == 'LS':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER)
+	elif btn == 'RS':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
+	elif btn == 'RTHUM':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
+	elif btn == 'LTHUM':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
+	elif btn == 'START':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START)
+	elif btn == 'BACK':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
+	elif btn == 'HOME':
+		gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE)
+	elif btn == 'RT':
+		gamepad.right_trigger_float(value)
+	elif btn == 'LT':
+		gamepad.left_trigger_float(value)
+	elif btn == 'LJ':
+		gamepad.left_joystick_float(x, y)
+	elif btn == 'RJ':
+		gamepad.right_joystick_float(x, y)
+	gamepad.update()
 def gpButtonRealease(btn):
     if btn == 'A':
         gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
@@ -147,7 +158,8 @@ def emulatorDisconnect():
 	label_control_status.configure(image=img_control_disconnected)  # cambiar icono de coneccion
 	camTestDriver()
 	accelReset()
-	dirReset()
+	dirReset(btn='LJ')
+	dirReset(btn='RJ')
 def emulatorDriver():
     if gamepad is 0:
         emulatorConnect()
@@ -215,14 +227,14 @@ def camChangeFront():
 		camReset()
 		gpButtonPress('Y')
 		time.sleep(.15)
-		gpButtonPress('UP')
+		gpButtonPress('DOWN')
 		window.after(500, camReset)
 def camChangeBack():
 	if gpState():
 		camReset()
 		gpButtonPress('Y')
 		time.sleep(.15)
-		gpButtonPress('DOWN')
+		gpButtonPress('UP')
 		window.after(500, camReset)
 def camReset():
 	if gpState():
@@ -245,14 +257,24 @@ def stopDriver():
 	accelerateDriver(0)
 
 #control direccion
-def dirDriver(dir=0):
-	if gpState():
-		gpButtonPress('LJ',x=float(dir),y=0)
-		slider_dir.set(dir)
-	else:
-		dirReset(0)
-def dirReset(dir=0):
-	slider_dir.set(0)
+def dirDriver(dir=0,btn=0):
+	if btn is not 0:
+		if gpState():
+			print(btn)
+			print(dir)
+			gpButtonPress(btn,x=float(dir),y=0)
+			if btn == 'LJ':
+				slider_dir_l.set(dir)
+
+			elif btn == 'RJ':
+				slider_dir_r.set(dir)
+		else:
+			dirReset(0,btn)
+def dirReset(dir=0,btn=0):
+	if btn == 'LJ':
+		slider_dir_l.set(0)
+	elif btn == 'RJ':
+		slider_dir_r.set(0)
 
 # ------------------------------------------------------
 # --------Recursos--------------------------------------
@@ -271,46 +293,53 @@ window.iconbitmap(resourcePath("favicon.ico"))
 
 # iconos
 label_control_status = Label(frameIcon, image=img_control_disconnected)
-label_control_status.pack(side='right', fill='both')
+label_control_status.pack(side='top', fill='both')
+
+button_casdasd = tk.Button(frameIcon, text='RESET')
+button_casdasd.pack(side='bottom', fill='both')
 
 # Botones
-button_connect = tk.Button(frameIcon, text='CONECTAR EMULADOR',height=3, command=emulatorDriver)
+button_connect = tk.Button(frameActions, text='CONECTAR EMULADOR',height=3, command=emulatorDriver)
 button_connect.pack(fill='both')
 
-#button_cam_test = tk.Button(frameIcon, text='TEST GIRAR CAMARA',height=3, command=camTestDriver)
+#button_cam_test = tk.Button(frameActions, text='TEST GIRAR CAMARA',height=3, command=camTestDriver)
 #button_cam_test.pack(fill='both')
 
-button_cam_change_front = tk.Button(frameIcon, text='CAMBIAR CAMARA FRONTAL',height=3, command=camChangeFront)
+button_cam_change_front = tk.Button(frameActions, text='CAMBIAR CAMARA FRONTAL',height=3, command=camChangeFront)
 button_cam_change_front.pack(fill='both')
 
-button_cam_change_back = tk.Button(frameIcon, text='CAMBIAR CAMARA TRASERA',height=3, command=camChangeBack)
+button_cam_change_back = tk.Button(frameActions, text='CAMBIAR CAMARA TRASERA',height=3, command=camChangeBack)
 button_cam_change_back.pack(fill='both')
 
-button_cam_rotate = tk.Button(frameIcon, text='GIRAR CAMARA',height=3, command=lambda: camRotateDriver(cam))
+button_cam_rotate = tk.Button(frameActions, text='GIRAR CAMARA',height=3, command=lambda: camRotateDriver(cam))
 button_cam_rotate.pack(fill='both')
 
 
-slider_accel = tk.Scale(frameIcon,from_=0,to=1,resolution=.1,orient='horizontal',label='Velocidad',troughcolor='lightblue',command=accelerateDriver)
+slider_accel = tk.Scale(frameActions,from_=0,to=1,resolution=.1,orient='horizontal',label='Velocidad',troughcolor='lightblue',command=accelerateDriver)
 slider_accel.pack(fill='both')
 slider_accel.bind('<ButtonRelease-1>', accelReset)
 
-slider_dir = tk.Scale(frameIcon,from_=-1,to=1,resolution=.1,orient='horizontal',label='Direccion',troughcolor='lightpink',command=dirDriver)
-slider_dir.pack(fill='both')
-slider_dir.bind('<ButtonRelease-1>', dirReset)
+slider_dir_l = tk.Scale(frameActions,from_=-1,to=1,resolution=.1,orient='horizontal',label='Joystick Izquierdo',troughcolor='lightpink',command=lambda x: dirDriver(slider_dir_l.get(),'LJ'))
+slider_dir_l.pack(fill='both')
+slider_dir_l.bind('<ButtonRelease-1>', lambda x: dirReset(btn='LJ'))
+
+slider_dir_r = tk.Scale(frameActions,from_=-1,to=1,resolution=.1,orient='horizontal',label='Joystick Derecho',troughcolor='lightpink',command=lambda x: dirDriver(slider_dir_r.get(),'RJ'))
+slider_dir_r.pack(fill='both')
+slider_dir_r.bind('<ButtonRelease-1>', lambda x: dirReset(btn='RJ'))
 
 #Control con teclado
 window.bind('<Up>',lambda x: accelerateDriver(1))
 window.bind('<Down>',lambda x: accelerateDriver(0))
 window.bind('<KeyRelease-Up>',lambda x: accelerateDriver(.5))
 
-window.bind('<Left>',lambda x: dirDriver(-0.5))
-window.bind('<Right>',lambda x: dirDriver(.5))
+window.bind('<Left>',lambda x: dirDriver(-0.5,'LJ'))
+window.bind('<Right>',lambda x: dirDriver(.5,'LJ'))
 
-window.bind('<KeyPress-space>',lambda x: dirDriver(slider_dir.get()*2))
+window.bind('<KeyPress-space>',lambda x: dirDriver(slider_dir_l.get()*2,'LJ'))
 
-window.bind('<KeyRelease-Left>',lambda x: dirDriver(0))
-window.bind('<KeyRelease-Right>',lambda x: dirDriver(0))
-window.bind('<KeyRelease-space>',lambda x: dirDriver(slider_dir.get()/2))
+window.bind('<KeyRelease-Left>',lambda x: dirDriver(0,'LJ'))
+window.bind('<KeyRelease-Right>',lambda x: dirDriver(0,'LJ'))
+window.bind('<KeyRelease-space>',lambda x: dirDriver(slider_dir_l.get()/2,'LJ'))
 
 # game pad
 
