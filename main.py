@@ -172,8 +172,12 @@ def emulatorDriver():
 
 # boton camaras giratorias
 camtestalarm = 0
+timesrotated = 0
+camtestalarmjob = 0
+precam = 0
+
 def camTestDriver(time=1000):
-	global camtestalarm
+	global camtestalarm,timesrotated
 	if gamepad is 0:
 		windowTitleSet('control desconectado')
 		if camtestalarm == 1:
@@ -189,12 +193,23 @@ def camTestDriver(time=1000):
 		else:
 			camtestalarm = 0
 			button_cam_test.configure(background = 'white')
-			windowTitleSet('detenido camTestDriver')
+			window.after_cancel(camtestalarmjob)
+			windowTitleSet('detenido camTestDriver | Se Roto ' + str(timesrotated) + ' veces')
+			timesrotated = 0
 			gpReset()
+
 def camTestAlarm(time=1000):
+	global timesrotated, camtestalarmjob, precam
 	if camtestalarm:
-		camRotate(random.randint(1, 4))
-		window.after(time, lambda: camTestAlarm(time))
+		windowTitleSet('No. de giros : ' + str(timesrotated))
+		timesrotated = timesrotated + 1
+		while True:
+			nextcam = random.randint(1, 4)
+			if precam != nextcam:
+				precam = nextcam
+				break
+		camRotate(precam)
+		camtestalarmjob = window.after(time, lambda: camTestAlarm(time))
 
 # boton girar camaras
 cam = 0
@@ -299,15 +314,15 @@ window.iconbitmap(resourcePath("favicon.ico"))
 label_control_status = Label(frameIcon, image=img_control_disconnected)
 label_control_status.pack(side='top',expand=YES)
 
-button_casdasd = tk.Button(frameIcon, text='RESET',height=10,width=30,bg='red',fg='white',command= gpReset)
-button_casdasd.pack(side='bottom',expand=YES)
+button_reset = tk.Button(frameIcon, text='RESET',height=10,width=30,bg='red',fg='white',command= gpReset)
+button_reset.pack(side='bottom',expand=YES)
 
 # Botones
 button_connect = tk.Button(frameActions, text='CONECTAR EMULADOR',height=4,width=75, command=emulatorDriver)
 button_connect.pack(fill='both')
 
-#button_cam_test = tk.Button(frameActions, text='TEST GIRAR CAMARA',height=3, command=camTestDriver)
-#button_cam_test.pack(fill='both')
+button_cam_test = tk.Button(frameActions, text='TEST GIRAR CAMARA',height=3, command=camTestDriver)
+button_cam_test.pack(fill='both')
 
 button_cam_change_front = tk.Button(frameActions, text='CAMBIAR CAMARA FRONTAL',height=4, command=camChangeFront)
 button_cam_change_front.pack(fill='both')
@@ -335,14 +350,14 @@ window.bind('<Up>',lambda x: accelerateDriver(1))
 window.bind('<Down>',lambda x: accelerateDriver(0))
 window.bind('<KeyRelease-Up>',lambda x: accelerateDriver(.5))
 
-window.bind('<Left>',lambda x: dirDriver(-0.5,'LJ'))
-window.bind('<Right>',lambda x: dirDriver(.5,'LJ'))
+window.bind('<Left>',lambda x: dirDriver(-0.35,'LJ'))
+window.bind('<Right>',lambda x: dirDriver(.35,'LJ'))
 
-window.bind('<KeyPress-space>',lambda x: dirDriver(slider_dir_l.get()*2,'LJ'))
+window.bind('<KeyPress-Shift_L>',lambda x: dirDriver(slider_dir_l.get()*2,'LJ'))
 
 window.bind('<KeyRelease-Left>',lambda x: dirDriver(0,'LJ'))
 window.bind('<KeyRelease-Right>',lambda x: dirDriver(0,'LJ'))
-window.bind('<KeyRelease-space>',lambda x: dirDriver(slider_dir_l.get()/2,'LJ'))
+window.bind('<KeyRelease-Shift_L>',lambda x: dirDriver(slider_dir_l.get()/2,'LJ'))
 
 # game pad
 
