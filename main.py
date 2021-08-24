@@ -157,8 +157,9 @@ def emulatorConnect():
     label_control_status.configure(image=img_control_connected)  # cambiar icono de coneccion
     windowTitleSet('control conectado')
 def emulatorDisconnect():
-	global gamepad
+	global gamepad,timesrotated
 	gamepad = 0
+	timesrotated = 0
 	label_control_status.configure(image=img_control_disconnected)  # cambiar icono de coneccion
 	camTestDriver()
 	accelReset()
@@ -197,12 +198,11 @@ def camTestDriver(time=1000):
 			windowTitleSet('detenido camTestDriver | Se Roto ' + str(timesrotated) + ' veces')
 			timesrotated = 0
 			gpReset()
-
 def camTestAlarm(time=1000):
 	global timesrotated, camtestalarmjob, precam
 	if camtestalarm:
-		windowTitleSet('No. de giros : ' + str(timesrotated))
 		timesrotated = timesrotated + 1
+		windowTitleSet('No. de giros : ' + str(timesrotated))
 		while True:
 			nextcam = random.randint(1, 4)
 			if precam != nextcam:
